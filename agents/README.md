@@ -19,6 +19,15 @@
 
 A collection of specialized AI agent definitions for [opencode](https://opencode.ai). Each agent is scoped to a specific engineering or product discipline, with a focused persona, operating approach, and quality bar.
 
+This library is designed to support a practical multi-agent development workflow:
+
+- `dev` as the main orchestrator
+- `docs-researcher` for documentation lookup and synthesis when needed
+- `systems-architect` for architecture and planning when the task is large enough
+- `backend-engineer`, `frontend-engineer`, or `mcp-server-architect` for implementation depending on domain
+- `code-reviewer` for read-only engineering review before merge
+- `production-readiness-reviewer` for launch and operational safety review when needed
+
 ---
 
 ## Agents
@@ -30,6 +39,26 @@ A collection of specialized AI agent definitions for [opencode](https://opencode
 Prioritizes correctness, security, operational reliability, and maintainability. Covers the full request lifecycle: input validation, authorization, business rules, persistence, retries, idempotency, and observability.
 
 > Use for: implementing or reviewing backend features, REST/GraphQL API design, debugging server-side failures, improving reliability behavior, and reviewing code for production correctness.
+
+---
+
+### `frontend-engineer`
+
+**Senior frontend engineer** for UI behavior, components, styling, client-side state, accessibility, responsiveness, and browser-side debugging.
+
+Prioritizes correct user-visible behavior, maintainable state flow, accessibility, and consistency with the existing frontend architecture.
+
+> Use for: implementing or reviewing pages and components, debugging frontend state issues, improving accessibility or responsive behavior, and shipping user-facing changes.
+
+---
+
+### `docs-researcher`
+
+**Documentation research agent** for finding, reading, and synthesizing framework, protocol, vendor, and internal project docs.
+
+Optimized for grounding implementation decisions in primary documentation before coding.
+
+> Use for: checking framework behavior, extracting exact API constraints, comparing docs with current code, and producing concise implementation guidance from docs.
 
 ---
 
@@ -73,6 +102,16 @@ Covers the full MCP lifecycle: capability design (tools, resources, prompts), pr
 
 ---
 
+### `code-reviewer`
+
+**Senior engineering reviewer** for read-only review of the current change set.
+
+Focuses on bugs, regressions, risky edge cases, and missing tests in recently changed code rather than broad launch-process concerns.
+
+> Use for: reviewing diffs before merge, checking for behavioral regressions, surfacing missing test coverage, and validating that a change fits repository conventions.
+
+---
+
 ### `production-readiness-reviewer`
 
 **Senior staff engineer** conducting production readiness reviews before launch, release, or major traffic increases.
@@ -89,13 +128,14 @@ Each agent is defined in a Markdown file with a YAML frontmatter block:
 
 ```yaml
 ---
-name: agent-name # used to invoke the agent
 description: >- # shown to the model when selecting agents
   When to use this agent...
 mode: all # primary | subagent | all (default)
 ---
 Agent system prompt...
 ```
+
+The markdown filename becomes the agent name. For example, `code-reviewer.md` creates the `code-reviewer` agent.
 
 The `description` field is used by the orchestrating model to decide which agent to invoke. Keep it accurate and specific to avoid misrouting.
 
@@ -106,9 +146,10 @@ Other supported frontmatter fields: `model`, `temperature`, `top_p`, `steps`, `p
 ## Adding an Agent
 
 1. Create a new `.md` file in this directory.
-2. Add frontmatter with `name`, `description`, and `mode`.
-3. Write the system prompt below the `---` separator.
-4. Keep the agent narrowly scoped — broad agents get misused.
+2. Add frontmatter with at least `description` and, optionally, `mode`.
+3. Use the filename as the agent identifier.
+4. Write the system prompt below the `---` separator.
+5. Keep the agent narrowly scoped — broad agents get misused.
 
 You can also run `opencode agent create` for an interactive setup wizard.
 
