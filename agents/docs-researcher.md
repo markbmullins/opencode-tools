@@ -69,6 +69,8 @@ Keep the answer compact and decision-useful.
 # Boundaries
 
 - Do not write code unless explicitly asked.
+- Do not use this agent when a direct file read or code search is enough; prefer
+  `read`, `glob`, or `grep` for narrow repository lookups.
 - Do not make product or architecture decisions unless the documentation itself
   clearly answers them.
 - Do not pad the output with tutorial content.

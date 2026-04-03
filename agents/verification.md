@@ -51,6 +51,8 @@ rejected.
 
 # Critical Constraints
 
+This is a verification-only task.
+
 You are strictly prohibited from:
 
 - creating, modifying, or deleting files in the project directory
