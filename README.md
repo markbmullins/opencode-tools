@@ -1,161 +1,91 @@
+# OpenCode Config
 
-# OpenCode Setup
+Portable OpenCode setup for custom agents and shared skills.
 
-This guide ensures your OpenCode agents in this repo are available across all machines with zero friction.
+This repo is the source of truth for:
 
+- `agents/` — custom OpenCode agents authored in this repo
+- `.agents/skills/` — installed skills managed by `npx skills`
+- `opencode.json` — shared OpenCode config
+- `skills-lock.json` — reproducible skill installs
 
-## Standard Path
+## Why this layout
 
-Clone this repo to the same location on every machine:
+This follows OpenCode's documented discovery paths:
 
-```bash
-~/dev/opencode-tools
+- project agents: `.opencode/agents/`
+- global agents: `~/.config/opencode/agents/`
+- project skills: `.opencode/skills/`, `.claude/skills/`, or `.agents/skills/`
+- global skills: `~/.config/opencode/skills/`, `~/.claude/skills/`, or `~/.agents/skills/`
+
+We keep skills in `.agents/skills/` inside the repo because `npx skills add ...` installs there directly.
+
+## Repo structure
+
+```text
+agents/           # repo-authored OpenCode agents
+.agents/skills/   # installed skills managed by `npx skills`
+opencode.json     # shared config
+skills-lock.json  # skill lockfile
+sync.sh           # sync repo into ~/.config/opencode
 ```
 
-## Install direnv
+## Install
 
-### macOS (zsh)
-
-```bash
-brew install direnv
-echo 'eval "$(direnv hook zsh)"' >> ~/.zshrc
-```
-
-Restart shell.
-
----
-
-### WSL (bash)
+Clone anywhere you want:
 
 ```bash
-sudo apt install direnv
-echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
+git clone git@github.com:YOUR_USERNAME/opencode-tools.git
+cd opencode-tools
+./sync.sh
 ```
 
-Restart shell.
+The script syncs this repo into the documented global OpenCode paths:
 
----
+- `agents/` → `~/.config/opencode/agents/`
+- `.agents/skills/` → `~/.config/opencode/skills/`
+- `opencode.json` → `~/.config/opencode/opencode.json`
 
-## Clone Repo
+You can override the target root with:
 
 ```bash
-git clone git@github.com:YOUR_USERNAME/opencode-tools.git ~/dev/opencode-tools
+OPENCODE_CONFIG_HOME=/some/path ./sync.sh
 ```
 
----
+## Add a skill
 
-## Global Fallback (Recommended)
-
-Add this to your shell config:
-
-### macOS
+From the repo root:
 
 ```bash
-~/.zshrc
+npx skills add https://github.com/github/awesome-copilot --skill documentation-writer
 ```
 
-### WSL
+That installs the skill into `.agents/skills/` in this repo. Then run:
 
 ```bash
-~/.bashrc
+./sync.sh
 ```
 
-Add:
-
-```bash
-export OPENCODE_PATHS="${OPENCODE_PATHS:-$HOME/dev/opencode-tools}"
-```
-
----
-
-## How It Works
-
-* If a project defines `OPENCODE_PATHS` → that is used
-* Otherwise → falls back to this repo
-
-Result:
-
-* Zero config in most repos
-* Still overrideable when needed
-
----
-
-## Project Override (Optional)
-
-If a project needs explicit control:
-
-Create `.envrc`:
-
-```bash
-export OPENCODE_PATHS=$HOME/dev/opencode-tools
-```
-
-Then allow it:
-
-```bash
-direnv allow
-```
-
----
+to copy it into your global OpenCode config.
 
 ## Verify
 
-From any project:
+Check your resolved config:
 
 ```bash
-opencode
+opencode debug config
 ```
 
-Your agents should be available.
+Check synced files:
 
----
-
-## Recommended Workflow
-
-Use `dev` as the main agent and let it selectively route work to specialist agents.
-
-Suggested flow:
-
-1. `dev` owns the task end to end.
-2. `docs-researcher` is used only when the task depends on unfamiliar docs, APIs, frameworks, or protocol details.
-3. `systems-architect` is used only when the problem needs real planning, design tradeoffs, or a phased approach.
-4. `backend-engineer`, `frontend-engineer`, or `mcp-server-architect` handle specialist implementation depending on where the complexity sits.
-5. `code-reviewer` reviews substantial changes before merge.
-6. `production-readiness-reviewer` is reserved for launch-risk, migration, rollout, or operational-safety review.
-
-This keeps the default path lightweight while still giving you specialist depth when the task warrants it.
-
----
-
-## Agent Map
-
-- `dev`: main orchestrator and default agent
-- `docs-researcher`: docs lookup, synthesis, and implementation guidance
-- `systems-architect`: architecture and planning
-- `backend-engineer`: backend implementation and review
-- `frontend-engineer`: frontend implementation and review
-- `mcp-server-architect`: MCP-specific design and implementation
-- `code-reviewer`: read-only engineering review of changes
-- `production-readiness-reviewer`: launch and operational safety review
-
----
-
-## Example Usage
-
-Prompts that fit this setup well:
-
-- `Use dev to add tenant-aware rate limiting to the API. Check docs first if the framework behavior is unclear.`
-- `@docs-researcher summarize the latest docs for Next.js server actions caching and revalidation.`
-- `@systems-architect propose a phased design for splitting background jobs out of the monolith.`
-- `@backend-engineer implement the webhook retry worker described in this issue.`
-- `@frontend-engineer fix the mobile navigation state bug and keep the current design language.`
-- `@mcp-server-architect design an MCP server that exposes internal docs search and ticket lookup.`
-- `@code-reviewer review the current diff for bugs and missing tests.`
-
----
+```bash
+ls ~/.config/opencode/agents
+ls ~/.config/opencode/skills
+```
 
 ## Notes
 
-- Do NOT use symlinks
-- Do NOT copy agents between repos
-- Always keep this repo as the single source of truth
+- `.claude/` and `.windsurf/` are intentionally ignored in this repo
+- `agents/` is for authored agents
+- `.agents/skills/` is for installed skills
+- `sync.sh` is the install step that makes the repo portable across machines
