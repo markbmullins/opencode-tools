@@ -10,6 +10,11 @@
       "source": "referodesign/refero_skill",
       "sourceType": "github",
       "computedHash": "e65c46ee932c4d4a718f743b1c845b4e6b981ec71239e7ca2119ed7bea3a690a"
+    },
+    "skill-creator": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "computedHash": "b122f4d1e91aa1d83027e050b5b37c3156203ee85458d7b1360bc48167c9e02a"
     }
   }
 }
