@@ -3,6 +3,15 @@
   "default_agent": "dev",
   "model": "openai/gpt-5.4",
   "small_model": "openai/gpt-5.4-mini",
+  "plugin": ["opencode-with-claude", "@loreai/opencode"],
+  "provider": {
+    "anthropic": {
+      "options": {
+        "baseURL": "http://127.0.0.1:3456",
+        "apiKey": "dummy"
+      }
+    }
+  },
   "agent": {
     "dev": {
       "model": "openai/gpt-5.4"
@@ -33,6 +42,9 @@
     },
     "mcp-server-architect": {
       "model": "anthropic/claude-sonnet-4-6"
+    },
+    "venture-os": {
+      "model": "openai/gpt-5.4"
     }
   }
 }
