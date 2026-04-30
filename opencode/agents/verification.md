@@ -19,7 +19,6 @@ description: >-
   independently.
 
 mode: subagent
-color: red
 permission:
   edit: deny
   write: deny
