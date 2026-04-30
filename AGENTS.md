@@ -1,16 +1,70 @@
-<!-- This section is maintained by the coding agent via lore (https://github.com/BYK/loreai) -->
-## Long-term Knowledge
+## Mental Model
 
-### Gotcha
+- This repo is the single source of truth for OpenCode config.
+- Machine state (`~/.config/opencode`, `~/.agents`) is generated — never edit it directly.
+- All changes flow: repo → sync scripts → machine.
 
-<!-- lore:019dd072-f294-7433-9671-feafb5efa3b5 -->
-* **Avoid absolute rules in skill instructions**: Skill guidance should use strong defaults, not universal laws. Overstated rules like 'never store an allocator' or 'always use X' make the skill brittle; prefer wording that explains the tradeoff and allows justified exceptions.
+---
 
-### Pattern
+## Architecture
 
-<!-- lore:019dd072-f293-797a-bcf4-571d23ec818c -->
-* **Keep SKILL.md lean and move fragile details out**: For project skills, keep the main \`SKILL.md\` focused on durable decision-making rules and workflow. Move version-sensitive APIs, exact command shapes, and detailed examples into \`references/\` files so the skill stays robust when upstream tools or languages change.
+- Canonical layout:
+  - `opencode/agents`
+  - `opencode/skills/authored`
+  - `opencode/skills/vendor`
+  - `opencode/config/opencode.json`
+- Use `scripts/sync-opencode.sh` to apply repo → machine state.
+- `sync.sh` is a compatibility wrapper only.
 
-<!-- lore:019dd072-f294-7433-9671-feb08d00856a -->
-* **Tell skills to verify local version-specific APIs**: When a skill depends on exact stdlib, build, or toolchain APIs, include an instruction to verify against the local installed version instead of relying on memory. This is especially important for fast-moving ecosystems where examples can become confidently wrong.
-<!-- End lore-managed section -->
+---
+
+## Rules
+
+- Only modify files inside `opencode/`.
+- Do not edit generated machine paths (`~/.config/opencode`, `~/.agents`).
+- Do not rely on global installs as source of truth.
+
+---
+
+## Gotchas
+
+- **Global installs bypass the repo**  
+  `npx skills add` (Global) writes to `~/.agents/skills`.  
+  → Import into `opencode/skills/vendor`, commit `skills-lock.json`, then sync.
+
+- **Legacy paths can cause drift**  
+  Ignore `.agents/skills` and `.opencode/skills`.  
+  → Use `scripts/doctor-opencode.sh` to detect conflicts.
+
+- **Lore markers are not config-driven**  
+  If they reappear, something external is rewriting `AGENTS.md` (plugin/cache).
+
+- **Avoid absolute rules in skills**  
+  Prefer strong defaults with rationale over “always/never”.
+
+---
+
+## Patterns
+
+- **AGENTS.md = agent memory**  
+  Store constraints, gotchas, and workflow rules here.  
+  Put human setup/docs in `README.md`.
+
+- **Keep skills durable**  
+  - `SKILL.md` = decisions + workflow  
+  - `references/` = volatile details (APIs, commands, examples)
+
+- **Separate skill ownership**  
+  - `authored/` = first-party  
+  - `vendor/` = imported  
+  Never duplicate between them.
+
+- **Verify version-specific behavior**  
+  Do not trust memory for fast-moving APIs — check local environment.
+
+---
+
+## Preference
+
+- Keep everything reproducible from git.
+- Avoid relying on machine-local or implicit state.
