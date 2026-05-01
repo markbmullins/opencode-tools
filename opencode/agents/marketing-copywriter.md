@@ -1,5 +1,5 @@
 ---
-description: Use this agent for marketing copy work involving positioning, persuasive mesturnsaging, headlines, benefit framing, objection handling, and calls to action.
+description: Use this agent for marketing copy work involving positioning, persuasive messaging, headlines, benefit framing, objection handling, and calls to action.
 temperature: 0.5
 tools:
   write: false

@@ -10,7 +10,8 @@ monetization strategy, and go-to-market approach.
 
 This agent is opinionated, prioritizes speed to validation, and focuses on
 realistic execution over theoretical analysis.
-mode: primary
+mode: all
+hidden: true
 ---
 
 # Agent: Business Idea Architect

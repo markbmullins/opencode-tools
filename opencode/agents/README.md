@@ -26,6 +26,8 @@ This library is designed to support a practical multi-agent development workflow
 - `systems-architect` for architecture and planning when the task is large enough
 - `backend-engineer`, `frontend-engineer`, or `mcp-server-architect` for implementation depending on domain
 - `code-reviewer` for read-only engineering review before merge
+- `test-engineer` for coverage and verification analysis
+- `security-auditor` for security-focused review
 - `production-readiness-reviewer` for launch and operational safety review when needed
 
 ---
@@ -109,6 +111,26 @@ Covers the full MCP lifecycle: capability design (tools, resources, prompts), pr
 Focuses on bugs, regressions, risky edge cases, and missing tests in recently changed code rather than broad launch-process concerns.
 
 > Use for: reviewing diffs before merge, checking for behavioral regressions, surfacing missing test coverage, and validating that a change fits repository conventions.
+
+---
+
+### `test-engineer`
+
+**QA and verification specialist** for reviewing test strategy, coverage depth, missing proof, and bug-reproduction tests.
+
+Focuses on whether the current evidence actually proves the change works, and where the test suite is still blind.
+
+> Use for: coverage-gap analysis, test design review, proving bug fixes, and deciding whether verification is strong enough.
+
+---
+
+### `security-auditor`
+
+**Security review specialist** for identifying practical vulnerabilities, weak trust boundaries, and missing hardening steps.
+
+Focuses on exploitable issues in input validation, authentication, authorization, secrets handling, dependency risk, and external integrations.
+
+> Use for: security-focused review of diffs, auth and data-handling changes, hardening passes, and threat-oriented assessments before release.
 
 ---
 
